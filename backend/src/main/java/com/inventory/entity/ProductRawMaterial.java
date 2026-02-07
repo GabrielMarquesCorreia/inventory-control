@@ -1,25 +1,44 @@
 package com.inventory.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.*;
 
 @Entity
-public class ProductRawMaterial {
-
-    @Id
-    @GeneratedValue
-    public Long id;
+public class ProductRawMaterial extends PanacheEntity {
 
     @ManyToOne
-    @JsonIgnore
-    public Product product;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @ManyToOne
-    public RawMaterial rawMaterial;
+    @JoinColumn(name = "raw_material_id")
+    private RawMaterial rawMaterial;
 
-    public Integer quantity;
+    private int quantity;
+
+    // ===== GETTERS / SETTERS =====
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public RawMaterial getRawMaterial() {
+        return rawMaterial;
+    }
+
+    public void setRawMaterial(RawMaterial rawMaterial) {
+        this.rawMaterial = rawMaterial;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

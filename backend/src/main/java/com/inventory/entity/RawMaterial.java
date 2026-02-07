@@ -1,19 +1,28 @@
 package com.inventory.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class RawMaterial {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
+    @NotBlank(message = "The material name is required")
     private String name;
 
-    private Integer stockQuantity;
+    @NotNull(message = "The stock is required")
+    @Min(value = 0, message = "The stock cannot be negative")
+    @Column(name = "stock_quantity")
+    private Integer stock;
 
-    // getters e setters
     public Long getId() {
         return id;
     }
@@ -22,8 +31,8 @@ public class RawMaterial {
         return name;
     }
 
-    public Integer getStockQuantity() {
-        return stockQuantity;
+    public Integer getStock() {
+        return stock;
     }
 
     public void setId(Long id) {
@@ -34,9 +43,7 @@ public class RawMaterial {
         this.name = name;
     }
 
-    public void setStockQuantity(Integer stockQuantity) {
-        this.stockQuantity = stockQuantity;
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
-
-    
 }

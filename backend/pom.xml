@@ -31,11 +31,8 @@
     </dependencyManagement>
 
     <dependencies>
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-arc</artifactId>
-    </dependency>
 
+    <!-- REST API -->
     <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-rest</artifactId>
@@ -46,16 +43,25 @@
         <artifactId>quarkus-rest-jackson</artifactId>
     </dependency>
 
+    <!-- Validação Bean Validation -->
+    <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>
+
+    <!-- Hibernate + Panache -->
     <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-hibernate-orm-panache</artifactId>
     </dependency>
 
+    <!-- PostgreSQL -->
     <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
 
+    <!-- Testes -->
     <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-junit</artifactId>
@@ -67,7 +73,9 @@
         <artifactId>rest-assured</artifactId>
         <scope>test</scope>
     </dependency>
+
 </dependencies>
+
 
     <build>
         <plugins>

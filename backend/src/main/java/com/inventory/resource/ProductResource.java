@@ -1,7 +1,5 @@
 package com.inventory.resource;
 
-import java.util.stream.Collectors;
-
 import com.inventory.dto.ProductDTO;
 import com.inventory.dto.ProductionCapacityDTO;
 import com.inventory.entity.Product;
@@ -21,7 +19,7 @@ public class ProductResource {
     @Inject
     ProductService productService;
 
-    // ✅ CREATE PRODUCT
+    // CREATE PRODUCT
     @POST
     @Transactional
     public Response create(Product product) {
@@ -34,7 +32,7 @@ public class ProductResource {
                 .build();
     }
 
-    // ✅ ADD MATERIAL
+    // ADD MATERIAL
     @POST
     @Path("/{productId}/materials")
     @Transactional
@@ -56,7 +54,7 @@ public class ProductResource {
         public int quantity;
     }
 
-    // ✅ PRODUCTION PLAN
+    // PRODUCTION PLAN
     @GET
     @Path("/production-plan")
     public Response productionPlan() {
@@ -66,7 +64,7 @@ public class ProductResource {
         ).build();
     }
 
-    // ✅ FIND BY ID (using DTO)
+    // FIND BY ID (using DTO)
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
@@ -92,7 +90,7 @@ public class ProductResource {
         return Response.ok(dto).build();
     }
 
-    // ✅ FIND ALL (using DTOs)
+    // FIND ALL (using DTOs)
     @GET
     public Response findAll() {
 
@@ -120,7 +118,7 @@ public class ProductResource {
         return Response.ok(dtoList).build();
     }
 
-    // ✅ UPDATE
+    // UPDATE
     @PUT
     @Path("/{id}")
     @Transactional
@@ -147,7 +145,7 @@ public class ProductResource {
         return Response.ok(dto).build();
     }
 
-    // ✅ DELETE
+    // DELETE
     @DELETE
     @Path("/{id}")
     @Transactional
@@ -158,7 +156,7 @@ public class ProductResource {
         return Response.noContent().build();
     }
 
-    // ✅ PRODUCTION CAPACITY
+    // PRODUCTION CAPACITY
     @GET
     @Path("/{id}/production-capacity")
     public Response productionCapacity(@PathParam("id") Long productId) {
@@ -169,7 +167,7 @@ public class ProductResource {
         return Response.ok(result).build();
     }
 
-   // ✅ AVAILABLE PRODUCTS FOR PRODUCTION
+   // AVAILABLE PRODUCTS FOR PRODUCTION
     @GET
     @Path("/available-production")
     public Response availableProduction() {

@@ -74,7 +74,7 @@ public class ProductService {
         );
     }
 
-    // ✅ CREATE
+    // CREATE
     @Transactional
     public Product create(Product product) {
 
@@ -84,13 +84,13 @@ public class ProductService {
     }
 
 
-    // ✅ FIND ALL
+    // FIND ALL
     public List<Product> findAll() {
         return productRepository.listAll();
     }
 
 
-    // ✅ FIND BY ID
+    // FIND BY ID
     public Product findById(Long id) {
 
         return productRepository
@@ -100,7 +100,7 @@ public class ProductService {
                 );
     }
 
-    // ✅ UPDATE
+    // UPDATE
     @Transactional
     public Product update(Long id, Product updatedProduct) {
 
@@ -121,7 +121,7 @@ public class ProductService {
     }
 
 
-    // ✅ DELETE
+    // DELETE
     @Transactional
     public void delete(Long id) {
 
@@ -177,7 +177,7 @@ public class ProductService {
         prm.setRawMaterial(material);
         prm.setQuantity(quantity);
 
-        // ✅ Persist in database
+        // Persist in database
         productRawMaterialRepository.persist(prm);
 
         // Add to product list
@@ -230,7 +230,7 @@ public class ProductService {
 
         return products.stream()
                 .map(p -> calculateProductionCapacity(p.getId()))
-                .filter(cap -> cap.maxProduction > 0) // ✅ FIXED HERE
+                .filter(cap -> cap.maxProduction > 0)
                 .collect(Collectors.toList());
     }
 

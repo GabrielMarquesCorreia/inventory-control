@@ -15,19 +15,19 @@ public class RawMaterialService {
     @Inject
     RawMaterialRepository repository;
 
-    // ✅ CREATE
+    // CREATE
     @Transactional
     public RawMaterial create(RawMaterial rawMaterial) {
         repository.persist(rawMaterial);
         return rawMaterial;
     }
 
-    // ✅ GET ALL
+    // GET ALL
     public List<RawMaterial> findAll() {
         return repository.listAll();
     }
 
-    // ✅ GET BY ID
+    // GET BY ID
     public RawMaterial findById(Long id) {
 
         return repository
@@ -38,7 +38,7 @@ public class RawMaterialService {
     }
 
 
-    // ✅ UPDATE
+    // UPDATE
     @Transactional
     public RawMaterial update(Long id, RawMaterial data) {
         RawMaterial entity = findById(id);
@@ -49,7 +49,7 @@ public class RawMaterialService {
         return entity;
     }
 
-    // ✅ DELETE
+    // DELETE
     @Transactional
     public void delete(Long id) {
         RawMaterial entity = findById(id);

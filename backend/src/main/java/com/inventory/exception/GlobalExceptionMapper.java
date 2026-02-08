@@ -16,7 +16,6 @@ public class GlobalExceptionMapper
     @Override
     public Response toResponse(Exception exception) {
 
-        // Loga erro real
         LOG.error("Unhandled error", exception);
 
         // 404

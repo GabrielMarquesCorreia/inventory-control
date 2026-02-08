@@ -9,7 +9,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;  // <- currently public field
+    public Long id;
 
     public String name;
     public BigDecimal value;
@@ -17,7 +17,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     public List<ProductRawMaterial> materials;
 
-    // ✅ Add getters and setters for all fields
+    // Add getters and setters for all fields
     public Long getId() {
         return id;
     }

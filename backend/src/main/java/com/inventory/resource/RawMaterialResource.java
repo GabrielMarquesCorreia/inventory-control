@@ -26,20 +26,20 @@ public class RawMaterialResource {
                 .build();
     }
 
-    // ✅ GET ALL
+    // GET ALL
     @GET
     public List<RawMaterial> findAll() {
         return service.findAll();
     }
 
-    // ✅ GET BY ID
+    // GET BY ID
     @GET
     @Path("/{id}")
     public RawMaterial findById(@PathParam("id") Long id) {
         return service.findById(id);
     }
 
-    // ✅ UPDATE
+    // UPDATE
     @PUT
     @Path("/{id}")
     public RawMaterial update(
@@ -49,7 +49,7 @@ public class RawMaterialResource {
         return service.update(id, rawMaterial);
     }
 
-    // ✅ DELETE
+    // DELETE
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") Long id) {

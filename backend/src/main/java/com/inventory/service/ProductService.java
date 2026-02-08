@@ -8,6 +8,10 @@ import com.inventory.repository.ProductRepository;
 import com.inventory.repository.RawMaterialRepository;
 import com.inventory.entity.RawMaterial;
 import com.inventory.exception.NotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.inventory.repository.ProductRawMaterialRepository;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,10 +19,12 @@ import java.util.ArrayList;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import java.util.List;
 
 @ApplicationScoped
 public class ProductService {
+
+    @Inject
+    ProductRawMaterialRepository productRawMaterialRepository;
 
     @Inject
     ProductRepository productRepository;
@@ -31,8 +37,15 @@ public class ProductService {
 
         Product product = productRepository.findById(productId);
 
-        if (product == null || product.getMaterials() == null || product.getMaterials().isEmpty()) {
-            return new ProductionCapacityDTO(productId, 0);
+        if (product == null ||
+            product.getMaterials() == null ||
+            product.getMaterials().isEmpty()) {
+
+            return new ProductionCapacityDTO(
+                    productId,
+                    product != null ? product.getName() : null,
+                    0
+            );
         }
 
         int maxProduction = Integer.MAX_VALUE;
@@ -43,8 +56,9 @@ public class ProductService {
                 continue;
             }
 
-            int possibleProduction = prm.getRawMaterial().getStock()
-                    / prm.getQuantity();
+            int possibleProduction =
+                    prm.getRawMaterial().getStock()
+                            / prm.getQuantity();
 
             maxProduction = Math.min(maxProduction, possibleProduction);
         }
@@ -53,7 +67,11 @@ public class ProductService {
             maxProduction = 0;
         }
 
-        return new ProductionCapacityDTO(productId, maxProduction);
+        return new ProductionCapacityDTO(
+                product.getId(),
+                product.getName(),
+                maxProduction
+        );
     }
 
     // ✅ CREATE
@@ -119,26 +137,31 @@ public class ProductService {
     @Transactional
     public void addMaterial(Long productId, Long materialId, int quantity) {
 
+        // Validate quantity
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than zero");
         }
 
+        // Find product
         Product product = productRepository.findById(productId);
 
         if (product == null) {
             throw new NotFoundException("Product not found");
         }
 
+        // Find raw material
         RawMaterial material = rawMaterialRepository.findById(materialId);
 
         if (material == null) {
             throw new NotFoundException("RawMaterial not found");
         }
 
+        // Initialize list if null
         if (product.getMaterials() == null) {
             product.setMaterials(new ArrayList<>());
         }
 
+        // Check if material already exists
         boolean exists = product.getMaterials()
                 .stream()
                 .anyMatch(m -> m.getRawMaterial().getId().equals(materialId));
@@ -147,12 +170,17 @@ public class ProductService {
             throw new IllegalArgumentException("Material already added");
         }
 
+        // Create relation entity
         ProductRawMaterial prm = new ProductRawMaterial();
 
         prm.setProduct(product);
         prm.setRawMaterial(material);
         prm.setQuantity(quantity);
 
+        // ✅ Persist in database
+        productRawMaterialRepository.persist(prm);
+
+        // Add to product list
         product.getMaterials().add(prm);
     }
 
@@ -169,7 +197,7 @@ public class ProductService {
         for (Product product : products) {
 
             ProductionCapacityDTO capacity =
-                    calculateProductionCapacity(product.id);
+                    calculateProductionCapacity(product.getId());
 
             int qty = capacity.maxProduction;
 
@@ -194,6 +222,16 @@ public class ProductService {
         }
 
         return plan;
+    }
+
+    public List<ProductionCapacityDTO> getAvailableProducts() {
+
+        List<Product> products = productRepository.listAll();
+
+        return products.stream()
+                .map(p -> calculateProductionCapacity(p.getId()))
+                .filter(cap -> cap.maxProduction > 0) // ✅ FIXED HERE
+                .collect(Collectors.toList());
     }
 
 }

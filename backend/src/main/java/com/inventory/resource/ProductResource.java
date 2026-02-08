@@ -1,5 +1,8 @@
 package com.inventory.resource;
 
+import java.util.stream.Collectors;
+
+import com.inventory.dto.ProductDTO;
 import com.inventory.dto.ProductionCapacityDTO;
 import com.inventory.entity.Product;
 import com.inventory.service.ProductService;
@@ -63,22 +66,58 @@ public class ProductResource {
         ).build();
     }
 
-    // ✅ FIND BY ID
+    // ✅ FIND BY ID (using DTO)
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
 
         Product product = productService.findById(id);
 
-        return Response.ok(product).build();
+        // Map to DTO
+        ProductDTO dto = new ProductDTO();
+        dto.id = product.getId();
+        dto.name = product.getName();
+        dto.value = product.getValue();
+
+        if (product.getMaterials() != null) {
+            dto.materials = product.getMaterials().stream().map(m -> {
+                ProductDTO.ProductRawMaterialDTO matDto = new ProductDTO.ProductRawMaterialDTO();
+                matDto.id = m.getRawMaterial().getId();
+                matDto.name = m.getRawMaterial().getName();
+                matDto.quantity = m.getQuantity();
+                return matDto;
+            }).toList();
+        }
+
+        return Response.ok(dto).build();
     }
 
+    // ✅ FIND ALL (using DTOs)
     @GET
     public Response findAll() {
 
-        return Response.ok(
-                productService.findAll()
-        ).build();
+        var products = productService.findAll();
+
+        var dtoList = products.stream().map(product -> {
+            ProductDTO dto = new ProductDTO();
+            dto.id = product.getId();
+            dto.name = product.getName();
+            dto.value = product.getValue();
+
+            if (product.getMaterials() != null) {
+                dto.materials = product.getMaterials().stream().map(m -> {
+                    ProductDTO.ProductRawMaterialDTO matDto = new ProductDTO.ProductRawMaterialDTO();
+                    matDto.id = m.getRawMaterial().getId();
+                    matDto.name = m.getRawMaterial().getName();
+                    matDto.quantity = m.getQuantity();
+                    return matDto;
+                }).toList();
+            }
+
+            return dto;
+        }).toList();
+
+        return Response.ok(dtoList).build();
     }
 
     // ✅ UPDATE
@@ -89,7 +128,23 @@ public class ProductResource {
 
         Product updated = productService.update(id, product);
 
-        return Response.ok(updated).build();
+        // Map to DTO
+        ProductDTO dto = new ProductDTO();
+        dto.id = updated.getId();
+        dto.name = updated.getName();
+        dto.value = updated.getValue();
+
+        if (updated.getMaterials() != null) {
+            dto.materials = updated.getMaterials().stream().map(m -> {
+                ProductDTO.ProductRawMaterialDTO matDto = new ProductDTO.ProductRawMaterialDTO();
+                matDto.id = m.getRawMaterial().getId();
+                matDto.name = m.getRawMaterial().getName();
+                matDto.quantity = m.getQuantity();
+                return matDto;
+            }).toList();
+        }
+
+        return Response.ok(dto).build();
     }
 
     // ✅ DELETE
@@ -113,4 +168,15 @@ public class ProductResource {
 
         return Response.ok(result).build();
     }
+
+   // ✅ AVAILABLE PRODUCTS FOR PRODUCTION
+    @GET
+    @Path("/available-production")
+    public Response availableProduction() {
+
+        return Response
+                .ok(productService.getAvailableProducts())
+                .build();
+    }
+
 }

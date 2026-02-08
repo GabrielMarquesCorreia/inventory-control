@@ -1,28 +1,30 @@
 package com.inventory.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-public class Product extends PanacheEntity {
+public class Product {
 
-    @Column(nullable = false)
-    private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;  // <- currently public field
 
-    @Column(nullable = false)
-    private BigDecimal value;
+    public String name;
+    public BigDecimal value;
 
-    @OneToMany(
-        mappedBy = "product",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    private List<ProductRawMaterial> materials;
+    @OneToMany(mappedBy = "product")
+    public List<ProductRawMaterial> materials;
 
-    // ===== GETTERS / SETTERS =====
+    // ✅ Add getters and setters for all fields
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

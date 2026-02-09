@@ -4,27 +4,18 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Entity
-public class Product {
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+@Entity
+public class Product extends PanacheEntity {
+
+    @Column(name = "price")
+    private BigDecimal value;
 
     public String name;
-    public BigDecimal value;
 
     @OneToMany(mappedBy = "product")
     public List<ProductRawMaterial> materials;
-
-    // Add getters and setters for all fields
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

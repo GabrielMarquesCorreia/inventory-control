@@ -24,14 +24,13 @@ import jakarta.transaction.Transactional;
 public class ProductService {
 
     @Inject
-    ProductRawMaterialRepository productRawMaterialRepository;
-
-    @Inject
     ProductRepository productRepository;
 
     @Inject
     RawMaterialRepository rawMaterialRepository;
 
+    @Inject
+    ProductRawMaterialRepository productRawMaterialRepository;
 
     public ProductionCapacityDTO calculateProductionCapacity(Long productId) {
 
@@ -68,7 +67,7 @@ public class ProductService {
         }
 
         return new ProductionCapacityDTO(
-                product.getId(),
+                product.id,
                 product.getName(),
                 maxProduction
         );
@@ -197,9 +196,9 @@ public class ProductService {
         for (Product product : products) {
 
             ProductionCapacityDTO capacity =
-                    calculateProductionCapacity(product.getId());
+                    calculateProductionCapacity(product.id);
 
-            int qty = capacity.maxProduction;
+            int qty = capacity.getMaxProduction();
 
             if (qty <= 0) {
                 continue;
@@ -229,7 +228,7 @@ public class ProductService {
         List<Product> products = productRepository.listAll();
 
         return products.stream()
-                .map(p -> calculateProductionCapacity(p.getId()))
+                .map(p -> calculateProductionCapacity(p.id))
                 .filter(cap -> cap.maxProduction > 0)
                 .collect(Collectors.toList());
     }

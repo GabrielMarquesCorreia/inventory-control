@@ -76,7 +76,7 @@ public class ProductResource {
 
         // Map to DTO
         ProductDTO dto = new ProductDTO();
-        dto.id = product.getId();
+        dto.id = product.id;
         dto.name = product.getName();
         dto.value = product.getValue();
 
@@ -101,7 +101,7 @@ public class ProductResource {
 
         var dtoList = products.stream().map(product -> {
             ProductDTO dto = new ProductDTO();
-            dto.id = product.getId();
+            dto.id = product.id;
             dto.name = product.getName();
             dto.value = product.getValue();
 
@@ -129,15 +129,15 @@ public class ProductResource {
 
         Product updated = productService.update(id, product);
 
-        // Map to DTO
         ProductDTO dto = new ProductDTO();
-        dto.id = updated.getId();
+        dto.id = updated.id; // ✅ CORRETO
         dto.name = updated.getName();
         dto.value = updated.getValue();
 
         if (updated.getMaterials() != null) {
             dto.materials = updated.getMaterials().stream().map(m -> {
-                ProductDTO.ProductRawMaterialDTO matDto = new ProductDTO.ProductRawMaterialDTO();
+                ProductDTO.ProductRawMaterialDTO matDto =
+                        new ProductDTO.ProductRawMaterialDTO();
                 matDto.id = m.getRawMaterial().getId();
                 matDto.name = m.getRawMaterial().getName();
                 matDto.quantity = m.getQuantity();

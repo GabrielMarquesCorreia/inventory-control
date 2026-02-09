@@ -4,6 +4,7 @@ import com.inventory.entity.ProductRawMaterial;
 import com.inventory.entity.RawMaterial;
 import com.inventory.repository.RawMaterialRepository;
 import com.inventory.service.RawMaterialService;
+import com.inventory.dto.RawMaterialCreateDTO;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -25,10 +26,15 @@ public class RawMaterialResource {
     RawMaterialRepository rawMaterialRepository;
 
     @POST
-    public Response create(@Valid RawMaterial rawMaterial) {
+    public Response create(@Valid RawMaterialCreateDTO dto) {
+
+        RawMaterial material = new RawMaterial();
+        material.setName(dto.name);
+        material.setStock(dto.stockQuantity);
+
         return Response
                 .status(Response.Status.CREATED)
-                .entity(service.create(rawMaterial))
+                .entity(service.create(material))
                 .build();
     }
 

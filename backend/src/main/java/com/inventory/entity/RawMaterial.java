@@ -1,5 +1,6 @@
 package com.inventory.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class RawMaterial {
     @NotBlank(message = "The material name is required")
     private String name;
 
+    @JsonProperty("stockQuantity") // <--- chave para teste
     @NotNull(message = "The stock is required")
     @Min(value = 0, message = "The stock cannot be negative")
     @Column(name = "stock_quantity")

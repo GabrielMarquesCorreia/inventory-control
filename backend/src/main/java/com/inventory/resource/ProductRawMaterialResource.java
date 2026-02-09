@@ -24,9 +24,6 @@ public class ProductRawMaterialResource {
     @Inject
     ProductRepository productRepository;
 
-    @Inject
-    RawMaterialRepository rawMaterialRepository;
-
     // ================= GET =================
     @GET
     public Response getMaterials(@QueryParam("productId") Long productId) {
@@ -119,43 +116,36 @@ public class ProductRawMaterialResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response updateMaterial(@PathParam("id") Long id, @QueryParam("quantity") int quantity) {
-
-        if (quantity <= 0) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                           .entity("Quantity must be greater than 0")
-                           .build();
-        }
-
+    public Response updateMaterialQuantity(@PathParam("id") Long id, @QueryParam("quantity") int quantity) {
         ProductRawMaterial prm = ProductRawMaterial.findById(id);
-
         if (prm == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity("Association not found")
-                           .build();
+                        .entity("ProductRawMaterial not found")
+                        .build();
         }
-
+        if (quantity <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Quantity must be greater than 0")
+                        .build();
+        }
         prm.setQuantity(quantity);
-
         return Response.ok(prm.id).build();
     }
 
     // ================= DELETE =================
+    @Inject
+    RawMaterialRepository rawMaterialRepository;
+
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteMaterial(@PathParam("id") Long id) {
-
+    public Response removeMaterialFromProduct(@PathParam("id") Long id) {
         ProductRawMaterial prm = ProductRawMaterial.findById(id);
-
         if (prm == null) {
-            return Response.status(Response.Status.NOT_FOUND)
-                           .entity("Association not found")
-                           .build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-
         prm.delete();
-
         return Response.noContent().build();
     }
+
 }

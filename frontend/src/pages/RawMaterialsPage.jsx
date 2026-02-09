@@ -1,44 +1,81 @@
 import { useEffect, useState } from "react";
-import { getRawMaterials } from "../api/rawMaterialService";
+import { getRawMaterials, createRawMaterial, deleteRawMaterial, updateRawMaterial } from "../api/rawMaterialService";
 
-function RawMaterialsPage() {
+function RawMaterialsPage({ reloadPlan }) {
   const [materials, setMaterials] = useState([]);
-  const [error, setError] = useState(null);
+  const [name, setName] = useState("");
+  const [stock, setStock] = useState("");
+  const [editingId, setEditingId] = useState(null);
+
+  const loadMaterials = async () => {
+    const res = await getRawMaterials();
+    setMaterials(res.data);
+  };
 
   useEffect(() => {
-  getRawMaterials()
-    .then((response) => {
-      setMaterials(response.data);
-    })
-    .catch(() => {
-      setError("Error loading raw materials");
-    });
-}, []);
+    loadMaterials();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name || !stock) return;
+
+    if (editingId) {
+      await updateRawMaterial(editingId, { name, stock: parseInt(stock) });
+    } else {
+      await createRawMaterial({ name, stock: parseInt(stock) });
+    }
+
+    setName("");
+    setStock("");
+    setEditingId(null);
+
+    await loadMaterials();
+    reloadPlan();
+  };
+
+  const handleEdit = (material) => {
+    setEditingId(material.id);
+    setName(material.name);
+    setStock(material.stock);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteRawMaterial(id);
+    await loadMaterials();
+    reloadPlan();
+  };
 
   return (
     <div>
-      <h1>Raw Materials</h1>
+      <h2>Raw Materials</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="Material name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Stock"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+        />
+        <button type="submit">{editingId ? "Update Material" : "Add Material"}</button>
+      </form>
 
-      <table border="1" cellPadding="5">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Stock</th>
-          </tr>
-        </thead>
-        <tbody>
-          {materials.map((m) => (
-            <tr key={m.id}>
-              <td>{m.id}</td>
-              <td>{m.name}</td>
-              <td>{m.stock}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <hr />
+
+      <ul>
+        {materials.map((m) => (
+          <li key={m.id}>
+            <b>{m.name}</b> – {m.stock}
+            <button onClick={() => handleEdit(m)}>Edit</button>
+            <button onClick={() => handleDelete(m.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

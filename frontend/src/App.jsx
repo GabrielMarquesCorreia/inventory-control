@@ -1,39 +1,45 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import ProductsPage from "./pages/ProductsPage";
 import RawMaterialsPage from "./pages/RawMaterialsPage";
 import ProductionPlan from "./pages/ProductionPlan";
+import { getProductionPlan } from "./api/productionPlanApi";
 
 function App() {
-  const [page, setPage] = useState("products");
+  const [currentPage, setCurrentPage] = useState("products");
+  const [productionPlan, setProductionPlan] = useState({ items: [], totalValue: 0 });
+  const [loading, setLoading] = useState(true);
+
+  const loadProductionPlan = async () => {
+    setLoading(true);
+    try {
+      const res = await getProductionPlan();
+      setProductionPlan(res.data);
+    } catch (err) {
+      console.error("Error loading production plan", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProductionPlan();
+  }, []);
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* Menu */}
+      <h1>Inventory Control</h1>
+
       <div style={{ marginBottom: "20px" }}>
-        <button onClick={() => setPage("products")}>
-          Products
-        </button>
-
-        <button
-          onClick={() => setPage("materials")}
-          style={{ marginLeft: "10px" }}
-        >
-          Raw Materials
-        </button>
-
-        <button
-          onClick={() => setPage("plan")}
-          style={{ marginLeft: "10px" }}
-        >
-          Production Plan
-        </button>
+        <button onClick={() => setCurrentPage("products")}>Products</button>
+        <button onClick={() => setCurrentPage("raw-materials")}>Raw Materials</button>
+        <button onClick={() => setCurrentPage("production-plan")}>Production Plan</button>
       </div>
 
-      {/* Pages */}
-      {page === "products" && <ProductsPage />}
-      {page === "materials" && <RawMaterialsPage />}
-      {page === "plan" && <ProductionPlan />}
+      {currentPage === "products" && <ProductsPage reloadPlan={loadProductionPlan} />}
+      {currentPage === "raw-materials" && <RawMaterialsPage reloadPlan={loadProductionPlan} />}
+      {currentPage === "production-plan" && (
+        <ProductionPlan plan={productionPlan} loading={loading} />
+      )}
     </div>
   );
 }

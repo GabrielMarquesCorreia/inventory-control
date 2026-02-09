@@ -1,8 +1,11 @@
 package com.inventory.resource;
 
+import java.util.ArrayList;
+
 import com.inventory.dto.ProductDTO;
 import com.inventory.dto.ProductionCapacityDTO;
 import com.inventory.entity.Product;
+import com.inventory.repository.ProductRepository;
 import com.inventory.service.ProductService;
 
 import jakarta.inject.Inject;
@@ -146,13 +149,24 @@ public class ProductResource {
     }
 
     // DELETE
+    @Inject
+    ProductRepository productRepository;
+
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response delete(@PathParam("id") Long id) {
+    public Response deleteProduct(@PathParam("id") Long id) {
+        Product product = productRepository.findById(id);
+        if (product == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
-        productService.delete(id);
+        if (product.getMaterials() != null) {
+            product.getMaterials().forEach(prm -> prm.delete());
+            product.setMaterials(new ArrayList<>());
+        }
 
+        productRepository.delete(product);
         return Response.noContent().build();
     }
 

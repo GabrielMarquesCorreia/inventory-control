@@ -1,6 +1,19 @@
 import api from "./api";
 
-// Get all raw materials
-export const getRawMaterials = () => {
-  return api.get("/raw-materials");
+export const getRawMaterials = () => api.get("/raw-materials");
+export const createRawMaterial = (material) => api.post("/raw-materials", material);
+export const updateRawMaterial = (id, material) => api.put(`/raw-materials/${id}`, material);
+export const deleteRawMaterial = (id) => api.delete(`/raw-materials/${id}`);
+
+export const addMaterialToProduct = (productId, materialId, quantity) => {
+  return api.post(`/product-materials?productId=${productId}&materialId=${materialId}&quantity=${quantity}`);
+};
+
+export const removeMaterialFromProduct = (prmId) => {
+  return api.delete(`/product-materials/${prmId}`);
+};
+
+// CORREÇÃO: Atualizar quantidade de matéria-prima de um produto
+export const updateMaterialQuantity = (prmId, quantity) => {
+  return api.put(`/product-materials/${prmId}?quantity=${quantity}`);
 };

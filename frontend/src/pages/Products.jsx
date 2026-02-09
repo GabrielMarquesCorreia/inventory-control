@@ -1,57 +1,70 @@
 import { useEffect, useState } from "react";
+import api from "../api";
+import { getProducts, createProduct, deleteProduct } from "../api/productService";
 import { getRawMaterials } from "../api/rawMaterialApi";
-import {
-  getProducts,
-  createProduct,
-  deleteProduct
-} from "../api/productService";
 
 function Products() {
   const [products, setProducts] = useState([]);
   const [rawMaterials, setRawMaterials] = useState([]);
-
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
-
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const [materialQuantity, setMaterialQuantity] = useState("");
   const [materials, setMaterials] = useState([]);
 
-  // -------------------------
-  // LOAD DATA
-  // -------------------------
   const loadProducts = async () => {
-    const response = await getProducts();
-    setProducts(response.data);
+    try {
+      const res = await getProducts();
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error loading products:", err);
+    }
+  };
+
+  const loadRawMaterials = async () => {
+    try {
+      const res = await getRawMaterials();
+      setRawMaterials(res.data);
+    } catch (err) {
+      console.error("Error loading raw materials:", err);
+    }
   };
 
   useEffect(() => {
     loadProducts();
-    getRawMaterials().then((data) => setRawMaterials(data));
+    loadRawMaterials();
   }, []);
 
-  // -------------------------
-  // ACTIONS
-  // -------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!name || !value) return;
 
-    await createProduct({
-      name,
-      value,
-      materials
-    });
+    try {
+      const res = await createProduct({ name, value: parseFloat(value) });
+      const productId = res.data.id;
 
-    setName("");
-    setValue("");
-    setMaterials([]);
+      for (const m of materials) {
+        await api.post(
+          `/product-materials?productId=${productId}&materialId=${m.rawMaterialId}&quantity=${m.quantity}`
+        );
+      }
 
-    loadProducts();
+      setName("");
+      setValue("");
+      setMaterials([]);
+      loadProducts();
+    } catch (err) {
+      console.error("Error creating product:", err);
+    }
   };
 
   const handleDelete = async (id) => {
-    await deleteProduct(id);
-    loadProducts();
+    try {
+      await deleteProduct(id);
+      loadProducts();
+    } catch (err) {
+      console.error("Error deleting product:", err);
+    }
   };
 
   const addMaterial = () => {
@@ -59,19 +72,13 @@ function Products() {
 
     setMaterials((prev) => [
       ...prev,
-      {
-        rawMaterialId: Number(selectedMaterial),
-        quantity: Number(materialQuantity)
-      }
+      { rawMaterialId: Number(selectedMaterial), quantity: Number(materialQuantity) },
     ]);
 
     setSelectedMaterial("");
     setMaterialQuantity("");
   };
 
-  // -------------------------
-  // RENDER
-  // -------------------------
   return (
     <div>
       <h2>Products</h2>
@@ -85,9 +92,7 @@ function Products() {
         >
           <option value="">Select material</option>
           {rawMaterials.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-            </option>
+            <option key={m.id} value={m.id}>{m.name}</option>
           ))}
         </select>
 
@@ -98,21 +103,12 @@ function Products() {
           onChange={(e) => setMaterialQuantity(e.target.value)}
         />
 
-        <button type="button" onClick={addMaterial}>
-          Add Material
-        </button>
+        <button type="button" onClick={addMaterial}>Add Material</button>
 
         <ul>
           {materials.map((m, index) => {
-            const materialName = rawMaterials.find(
-              (r) => r.id === m.rawMaterialId
-            )?.name;
-
-            return (
-              <li key={index}>
-                {materialName} – Qty: {m.quantity}
-              </li>
-            );
+            const materialName = rawMaterials.find(r => r.id === m.rawMaterialId)?.name;
+            return <li key={index}>{materialName} – Qty: {m.quantity}</li>;
           })}
         </ul>
 
@@ -137,10 +133,8 @@ function Products() {
       <ul>
         {products.map((p) => (
           <li key={p.id}>
-            {p.name} – ${p.value}
-            <button onClick={() => handleDelete(p.id)}>
-              Delete
-            </button>
+            {p.name} – ${Number(p.value).toFixed(2)}
+            <button onClick={() => handleDelete(p.id)}>Delete</button>
           </li>
         ))}
       </ul>

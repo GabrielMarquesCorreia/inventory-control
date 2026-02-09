@@ -1,9 +1,12 @@
 package com.inventory.resource;
 
+import com.inventory.entity.ProductRawMaterial;
 import com.inventory.entity.RawMaterial;
+import com.inventory.repository.RawMaterialRepository;
 import com.inventory.service.RawMaterialService;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -17,6 +20,9 @@ public class RawMaterialResource {
 
     @Inject
     RawMaterialService service;
+
+    @Inject
+    RawMaterialRepository rawMaterialRepository;
 
     @POST
     public Response create(@Valid RawMaterial rawMaterial) {
@@ -52,8 +58,17 @@ public class RawMaterialResource {
     // DELETE
     @DELETE
     @Path("/{id}")
+    @Transactional
     public Response delete(@PathParam("id") Long id) {
-        service.delete(id);
+        RawMaterial material = rawMaterialRepository.findById(id);
+        if (material == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<ProductRawMaterial> related = ProductRawMaterial.list("rawMaterial", material);
+        related.forEach(ProductRawMaterial::delete);
+
+        rawMaterialRepository.delete(material); // melhor que material.delete()
         return Response.noContent().build();
     }
 }

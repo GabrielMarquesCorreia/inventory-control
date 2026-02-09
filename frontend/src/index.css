@@ -251,8 +251,8 @@ select {
 }
 
 select option {
-  background-color: #242424; /* fundo da lista */
-  color: #ffffff;           /* texto */
+  background-color: #242424;
+  color: #ffffff;
 }
 
 select option:checked {

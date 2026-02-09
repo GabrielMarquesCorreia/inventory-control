@@ -109,7 +109,7 @@ public class ProductRawMaterialResource {
         prm.persist();
         product.getMaterials().add(prm);
 
-        return Response.ok(prm.id).build(); // Retorna apenas o ID da associação
+        return Response.ok(prm.id).build();
     }
 
     // ================= PUT =================

@@ -68,7 +68,7 @@ public class RawMaterialResource {
         List<ProductRawMaterial> related = ProductRawMaterial.list("rawMaterial", material);
         related.forEach(ProductRawMaterial::delete);
 
-        rawMaterialRepository.delete(material); // melhor que material.delete()
+        rawMaterialRepository.delete(material);
         return Response.noContent().build();
     }
 }

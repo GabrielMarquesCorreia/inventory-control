@@ -28,22 +28,17 @@ public class AdminResource {
     @Transactional
     public Response clearAllData() {
 
-        // Delete all product-raw material associations first and count how many were deleted
         long associationsDeleted = productRawMaterialRepository.deleteAll();
 
-        // Delete all products and count
         long productsDeleted = productRepository.deleteAll();
 
-        // Delete all raw materials and count
         long rawMaterialsDeleted = rawMaterialRepository.deleteAll();
 
-        // Create a detailed message
         String message = String.format(
             "Data cleared successfully! Deleted %d associations, %d products, %d raw materials.",
             associationsDeleted, productsDeleted, rawMaterialsDeleted
         );
 
-        // Return OK response with detailed message
         return Response.ok(message).build();
     }
 }

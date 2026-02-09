@@ -13,7 +13,6 @@ export const removeMaterialFromProduct = (prmId) => {
   return api.delete(`/product-materials/${prmId}`);
 };
 
-// CORREÇÃO: Atualizar quantidade de matéria-prima de um produto
 export const updateMaterialQuantity = (prmId, quantity) => {
   return api.put(`/product-materials/${prmId}?quantity=${quantity}`);
 };

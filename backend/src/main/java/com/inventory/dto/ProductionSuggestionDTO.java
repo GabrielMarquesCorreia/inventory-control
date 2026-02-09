@@ -1,6 +1,5 @@
 package com.inventory.dto;
 
-// DTO = Data Transfer Object
 public class ProductionSuggestionDTO {
 
     public Long productId;

@@ -8,10 +8,8 @@ public class ProductDTO {
     public String name;
     public BigDecimal value;
 
-    // Optional: include materials if you want
     public List<ProductRawMaterialDTO> materials;
 
-    // Nested DTO for materials
     public static class ProductRawMaterialDTO {
         public Long id;
         public String name;

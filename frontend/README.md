@@ -1,16 +1,120 @@
-# React + Vite
+📦 Inventory Control System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for inventory and production control, developed with React and Vite.
 
-Currently, two official plugins are available:
+This application provides a graphical interface to manage products, raw materials, and visualize production capacity based on available stock, consuming a REST API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🚀 Technologies
 
-## React Compiler
+React
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Vite
 
-## Expanding the ESLint configuration
+JavaScript (ES6+)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Axios
+
+HTML5
+
+CSS3
+
+📋 Requirements
+
+Before running the project, make sure you have:
+
+Node.js 18 or higher
+
+npm
+
+Backend API running
+
+⚙️ Application Configuration
+
+The frontend communicates with the backend through a REST API using Axios.
+
+API configuration file:
+
+src/api/api.js
+
+
+Example configuration:
+
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:8080",
+});
+
+export default api;
+
+📁 Project Structure
+src/
+├── api
+│   ├── api.js
+│   ├── productService.js
+│   ├── rawMaterialService.js
+│   └── productionPlanApi.js
+├── pages
+│   ├── ProductsPage.jsx
+│   ├── RawMaterialsPage.jsx
+│   └── ProductionPlan.jsx
+├── App.jsx
+├── main.jsx
+└── index.css
+
+⚙️ Features
+📌 Products
+
+Create, read, update, and delete products
+
+Associate raw materials with products
+
+📌 Raw Materials
+
+Create, read, update, and delete raw materials
+
+Manage stock quantity
+
+📌 Production Planning
+
+List products that can be produced based on available stock
+
+Calculate the maximum production quantity per product
+
+Prioritize products with higher value
+
+Display the total estimated production value
+
+💡 Product prioritization is handled by the backend to ensure correct business rules.
+
+▶️ How to Run the Project
+Install dependencies
+npm install
+
+Run the application
+npm run dev
+
+
+The application will be available at:
+
+http://localhost:5173
+
+🌐 Supported Browsers
+
+Google Chrome
+
+Mozilla Firefox
+
+Microsoft Edge
+
+📌 Notes
+
+The frontend is fully decoupled from the backend.
+
+The layout is responsive and works across different screen sizes.
+
+All source code and naming conventions are written in English.
+
+📄 License
+
+This project was developed exclusively for technical evaluation purposes.

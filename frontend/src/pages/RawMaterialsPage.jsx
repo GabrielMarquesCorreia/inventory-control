@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getRawMaterials, createRawMaterial, deleteRawMaterial, updateRawMaterial } from "../api/rawMaterialService";
 
 function RawMaterialsPage({ reloadPlan }) {
@@ -47,10 +47,11 @@ function RawMaterialsPage({ reloadPlan }) {
   };
 
   return (
-    <div>
+    <div className="main-container">
       <h2>Raw Materials</h2>
 
       <form onSubmit={handleSubmit}>
+        <div className="form-row">
         <input
           placeholder="Material name"
           value={name}
@@ -63,19 +64,30 @@ function RawMaterialsPage({ reloadPlan }) {
           onChange={(e) => setStock(e.target.value)}
         />
         <button type="submit">{editingId ? "Update Material" : "Add Material"}</button>
+        </div>
       </form>
 
-      <hr />
-
-      <ul>
-        {materials.map((m) => (
-          <li key={m.id}>
-            <b>{m.name}</b> – {m.stock}
-            <button onClick={() => handleEdit(m)}>Edit</button>
-            <button onClick={() => handleDelete(m.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Stock</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {materials.map((m) => (
+            <tr key={m.id}>
+              <td>{m.name}</td>
+              <td>{m.stock}</td>
+              <td>
+                <button onClick={() => handleEdit(m)}>Edit</button>
+                <button onClick={() => handleDelete(m.id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

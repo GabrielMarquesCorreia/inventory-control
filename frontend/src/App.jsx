@@ -29,7 +29,7 @@ function App() {
     <div style={{ padding: "20px" }}>
       <h1>Inventory Control</h1>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="header-buttons" style={{ marginBottom: "10px" }}>
         <button onClick={() => setCurrentPage("products")}>Products</button>
         <button onClick={() => setCurrentPage("raw-materials")}>Raw Materials</button>
         <button onClick={() => setCurrentPage("production-plan")}>Production Plan</button>

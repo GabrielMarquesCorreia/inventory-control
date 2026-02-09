@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getProducts, createProduct, deleteProduct, updateProduct } from "../api/productService";
 import { getRawMaterials, addMaterialToProduct } from "../api/rawMaterialService";
 import api from "../api/api";
@@ -9,7 +9,6 @@ function ProductsPage({ reloadPlan }) {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const [editingProductId, setEditingProductId] = useState(null);
-
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const [materialQuantity, setMaterialQuantity] = useState("");
   const [materialsForNewProduct, setMaterialsForNewProduct] = useState([]);
@@ -48,7 +47,7 @@ function ProductsPage({ reloadPlan }) {
     if (!name || !value) return;
 
     if (!editingProductId && materialsForNewProduct.length === 0) {
-      alert("Você deve adicionar pelo menos uma matéria-prima antes de criar o produto!");
+      alert("Please add at least one material for the new product.");
       return;
     }
 
@@ -98,81 +97,118 @@ function ProductsPage({ reloadPlan }) {
   };
 
   return (
-    <div>
+    <div className="main-container">
       <h2>Products</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Product name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          placeholder="Value"
-          type="number"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
+      <form onSubmit={handleSubmit} className="form-block">
 
-        {editingProductId === null && (
-          <div style={{ marginTop: "5px" }}>
-            <b>Materials for new product:</b>
-            <ul>
+        {/* Materials */}
+        <div style={{ marginBottom: "30px" }}>
+          <h2>Materials for new product:</h2>
+
+          {editingProductId === null && (
+            <div className="form-row">
+              <select
+                value={selectedMaterial}
+                onChange={(e) => setSelectedMaterial(e.target.value)}
+              >
+                <option value="">Select material</option>
+                {rawMaterials.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="number"
+                placeholder="Quantity"
+                value={materialQuantity}
+                onChange={(e) => setMaterialQuantity(e.target.value)}
+              />
+
+              <button type="button" onClick={handleAddMaterial}>
+                Add Material
+              </button>
+            </div>
+          )}
+
+          {materialsForNewProduct.length > 0 && (
+            <ul style={{ marginTop: "10px" }}>
               {materialsForNewProduct.map((m) => (
-                <li key={m.id}>{m.name} – {m.quantity}</li>
+                <li key={m.id}>
+                  {m.name} – {m.quantity}
+                </li>
               ))}
             </ul>
-            <select
-              value={selectedMaterial}
-              onChange={(e) => setSelectedMaterial(e.target.value)}
-            >
-              <option value="">Select material</option>
-              {rawMaterials.map((m) => (
-                <option key={m.id} value={m.id}>{m.name}</option>
-              ))}
-            </select>
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={materialQuantity}
-              onChange={(e) => setMaterialQuantity(e.target.value)}
-            />
-            <button type="button" onClick={handleAddMaterial}>Add Material</button>
-          </div>
-        )}
+          )}
+        </div>
 
-        <button type="submit">{editingProductId ? "Update Product" : "Add Product"}</button>
+        {/* Product inputs */}
+        <div className="form-row">
+          <input
+            placeholder="Product name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <input
+            placeholder="Value"
+            type="number"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+
+          <button type="submit">
+            {editingProductId ? "Update Product" : "Add Product"}
+          </button>
+        </div>
+
       </form>
 
       <hr />
 
-      <ul>
-        {products.map((p) => (
-          <li key={p.id}>
-            <b>{p.name}</b> – ${p.value?.toFixed(2) || 0}
-            <button onClick={() => handleEdit(p)}>Edit</button>
-            <button onClick={() => handleDelete(p.id)}>Delete</button>
-
-            {p.materials?.length > 0 && (
-              <ul>
-                {p.materials.filter(m => m.rawMaterial).map((m) => (
-                  <li key={m.id}>
-                    {m.rawMaterial.name} – 
-                    <input
-                      type="number"
-                      value={m.quantity}
-                      onChange={(e) =>
-                        handleUpdateMaterialQuantity(m.id, e.target.value)
-                      }
-                      style={{ width: "60px", marginLeft: "5px" }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Unit Value</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((p) => (
+            <React.Fragment key={p.id}>
+              <tr>
+                <td>{p.name}</td>
+                <td>${p.value?.toFixed(2) || 0}</td>
+                <td>
+                  <button onClick={() => handleEdit(p)}>Edit</button>
+                  <button onClick={() => handleDelete(p.id)}>Delete</button>
+                </td>
+              </tr>
+              {p.materials?.length > 0 &&
+                p.materials.filter(m => m.rawMaterial).map((m) => (
+                  <tr key={m.id}>
+                    <td style={{ paddingLeft: "20px" }}>– {m.rawMaterial.name}</td>
+                    <td>
+                      <input
+                        type="number"
+                        value={m.quantity}
+                        onChange={(e) =>
+                          handleUpdateMaterialQuantity(m.id, e.target.value)
+                        }
+                        style={{ width: "60px" }}
+                      />
+                    </td>
+                    <td></td>
+                  </tr>
+                ))
+              }
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

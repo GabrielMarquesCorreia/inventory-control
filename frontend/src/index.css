@@ -1,21 +1,3 @@
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: sans-serif;
-}
-
-#root {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.main-container {
-  width: 90%;
-  max-width: 800px;
-}
-
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -30,3 +12,405 @@ body, html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* =======================
+   BASE LAYOUT
+======================= */
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+/* =======================
+   HEADERS
+======================= */
+
+h1,
+h2 {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+h3.form-section-title {
+  margin: 30px 0 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* =======================
+   HEADER BUTTONS
+======================= */
+
+.header-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.header-buttons button {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 1em;
+  font-weight: bold;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.header-buttons button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #646cff;
+}
+
+/* =======================
+   FORM BLOCK (CARD)
+======================= */
+
+.form-block {
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+/* =======================
+   FORM STRUCTURE
+======================= */
+
+form {
+  width: 100%;
+  max-width: 600px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 10px;
+  width: 100%;
+}
+
+/* =======================
+   INPUTS & SELECTS
+======================= */
+
+.form-row input,
+.form-row select {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: 1px solid #fff;
+  background-color: #1a1a1a;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+/* Select custom arrow */
+.form-row select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+/* =======================
+   FORM BUTTONS
+======================= */
+
+.form-row button,
+form button,
+li > button {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 1em;
+  font-weight: bold;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form-row button {
+  white-space: nowrap;
+}
+
+/* Hover & Focus */
+.form-row input:focus,
+.form-row select:focus,
+form button:hover,
+li > button:hover {
+  outline: none;
+  border-color: #646cff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* =======================
+   MATERIAL LIST (NEW PRODUCT)
+======================= */
+
+.material-list {
+  margin-top: 15px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.material-list li {
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+/* =======================
+   TABLES
+======================= */
+
+table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+th {
+  background-color: rgba(255, 255, 255, 0.15);
+  font-weight: bold;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background-color: rgba(100, 108, 255, 0.1);
+}
+
+/* Table buttons */
+td button {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 0.9em;
+  font-weight: bold;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 5px;
+}
+
+td button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #646cff;
+}
+
+select {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #646cff;
+  border-radius: 6px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+select option {
+  background-color: #242424; /* fundo da lista */
+  color: #ffffff;           /* texto */
+}
+
+select option:checked {
+  background-color: #646cff;
+  color: #ffffff;
+}
+
+select option:hover {
+  background-color: #5058d8;
+}
+
+
+/* =======================
+   LIGHT MODE
+======================= */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  select {
+    background-color: #f9f9f9;
+    color: #213547;
+    border: 1px solid #213547;
+  }
+
+  select option {
+    background-color: #ffffff;
+    color: #213547;
+  }
+
+  .form-row input,
+  .form-row select {
+    background-color: #f9f9f9;
+    color: #213547;
+    border: 1px solid #213547;
+  }
+
+  .form-block {
+    background-color: #f9f9f9;
+    border-color: #ddd;
+  }
+
+  table {
+    background-color: #f9f9f9;
+  }
+
+  table th {
+    background-color: #ddd;
+    color: #213547;
+  }
+
+  table td {
+    color: #213547;
+  }
+
+  .header-buttons button,
+  form button,
+  li > button,
+  td button {
+    color: #213547;
+    border-color: #213547;
+  }
+}
+
+/* Celular */
+@media (max-width: 480px) {
+
+  body {
+    padding: 12px;
+  }
+
+  .main-container {
+    width: 100%;
+  }
+
+  h1, h2 {
+    font-size: 1.2rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row button {
+    width: 100%;
+  }
+
+  .header-buttons {
+    gap: 10px;
+  }
+
+  .header-buttons button {
+    width: 100%;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  td button {
+    margin: 4px 0 0;
+    width: 100%;
+  }
+}
+
+/* Tablet */
+
+@media (min-width: 481px) and (max-width: 768px) {
+
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-row button {
+    grid-column: span 2;
+  }
+
+  .header-buttons button {
+    flex: 1;
+  }
+
+  table {
+    font-size: 0.95rem;
+  }
+}
+
+/* notebook */
+
+@media (min-width: 769px) and (max-width: 1200px) {
+
+  .main-container {
+    max-width: 900px;
+  }
+
+  .form-row {
+    grid-template-columns: 2fr 1fr auto;
+  }
+}
+
+/* desktop */
+
+@media (min-width: 1201px) {
+
+  .main-container {
+    max-width: 1100px;
+  }
+
+  .form-block {
+    padding: 25px;
+  }
+
+  table {
+    font-size: 1rem;
+  }
+}
+

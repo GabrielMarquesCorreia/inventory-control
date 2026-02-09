@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getRawMaterials, createRawMaterial, deleteRawMaterial, updateRawMaterial } from "../api/rawMaterialService";
+import {
+  getRawMaterials,
+  createRawMaterial,
+  deleteRawMaterial,
+  updateRawMaterial,
+} from "../api/rawMaterialService";
 
 function RawMaterialsPage({ reloadPlan }) {
   const [materials, setMaterials] = useState([]);
@@ -18,26 +23,43 @@ function RawMaterialsPage({ reloadPlan }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !stock) return;
 
-    if (editingId) {
-      await updateRawMaterial(editingId, { name, stock: parseInt(stock) });
-    } else {
-      await createRawMaterial({ name, stock: parseInt(stock) });
+    if (!name || !stock) {
+      alert("Preencha todos os campos");
+      return;
     }
 
-    setName("");
-    setStock("");
-    setEditingId(null);
+    const parsedStock = parseInt(stock, 10);
+    if (isNaN(parsedStock)) {
+      alert("Stock precisa ser um número válido");
+      return;
+    }
 
-    await loadMaterials();
-    reloadPlan();
+    try {
+      if (editingId) {
+        await updateRawMaterial(editingId, { name, stockQuantity: parsedStock });
+      } else {
+        await createRawMaterial({ name, stockQuantity: parsedStock });
+      }
+
+      // Reset form
+      setName("");
+      setStock("");
+      setEditingId(null);
+
+      // Reload
+      await loadMaterials();
+      reloadPlan();
+    } catch (error) {
+      console.error("Error saving material:", error);
+      alert("Failed to save material. Please check the data and try again.");
+    }
   };
 
   const handleEdit = (material) => {
     setEditingId(material.id);
     setName(material.name);
-    setStock(material.stock);
+    setStock(material.stockQuantity);
   };
 
   const handleDelete = async (id) => {
@@ -52,18 +74,18 @@ function RawMaterialsPage({ reloadPlan }) {
 
       <form onSubmit={handleSubmit}>
         <div className="form-row">
-        <input
-          placeholder="Material name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Stock"
-          value={stock}
-          onChange={(e) => setStock(e.target.value)}
-        />
-        <button type="submit">{editingId ? "Update Material" : "Add Material"}</button>
+          <input
+            placeholder="Material name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder="Stock"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+          />
+          <button type="submit">{editingId ? "Update Material" : "Add Material"}</button>
         </div>
       </form>
 
@@ -79,7 +101,7 @@ function RawMaterialsPage({ reloadPlan }) {
           {materials.map((m) => (
             <tr key={m.id}>
               <td>{m.name}</td>
-              <td>{m.stock}</td>
+              <td>{m.stockQuantity}</td>
               <td>
                 <button onClick={() => handleEdit(m)}>Edit</button>
                 <button onClick={() => handleDelete(m.id)}>Delete</button>

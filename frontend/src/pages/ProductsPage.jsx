@@ -3,6 +3,7 @@ import { getProducts, createProduct, deleteProduct, updateProduct } from "../api
 import { getRawMaterials, addMaterialToProduct } from "../api/rawMaterialService";
 import api from "../api/api";
 
+
 function ProductsPage({ reloadPlan }) {
   const [products, setProducts] = useState([]);
   const [rawMaterials, setRawMaterials] = useState([]);

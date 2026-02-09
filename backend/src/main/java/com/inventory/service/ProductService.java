@@ -12,9 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.inventory.repository.ProductRawMaterialRepository;
 
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.math.BigDecimal;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -184,44 +185,45 @@ public class ProductService {
     }
 
     public ProductionPlanDTO calculateProductionPlan() {
+    List<Product> products = productRepository.listAll();
+    products.sort((a, b) -> b.getValue().compareTo(a.getValue()));
 
-        List<Product> products = productRepository.listAll();
+    Map<Long, Integer> virtualStock = new HashMap<>();
+    rawMaterialRepository.listAll()
+            .forEach(m -> virtualStock.put(m.getId(), m.getStock()));
 
-        products.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+    ProductionPlanDTO plan = new ProductionPlanDTO();
+    plan.items = new ArrayList<>();
+    plan.totalValue = BigDecimal.ZERO;
 
-        ProductionPlanDTO plan = new ProductionPlanDTO();
-        plan.items = new ArrayList<>();
-        plan.totalValue = BigDecimal.ZERO;
+    for (Product product : products) {
+        int maxQty = Integer.MAX_VALUE;
 
-        for (Product product : products) {
-
-            ProductionCapacityDTO capacity =
-                    calculateProductionCapacity(product.id);
-
-            int qty = capacity.getMaxProduction();
-
-            if (qty <= 0) {
-                continue;
-            }
-
-            ProductionPlanDTO.Item item =
-                    new ProductionPlanDTO.Item();
-
-            item.productName = product.getName();
-            item.quantity = qty;
-
-            item.value =
-                    product.getValue()
-                        .multiply(BigDecimal.valueOf(qty));
-
-            plan.totalValue =
-                    plan.totalValue.add(item.value);
-
-            plan.items.add(item);
+        for (ProductRawMaterial prm : product.getMaterials()) {
+            int available = virtualStock.getOrDefault(prm.getRawMaterial().getId(), 0);
+            if (prm.getQuantity() <= 0) continue;
+            int possible = available / prm.getQuantity();
+            maxQty = Math.min(maxQty, possible);
         }
 
-        return plan;
+        if (maxQty <= 0) continue;
+
+        for (ProductRawMaterial prm : product.getMaterials()) {
+            int remaining = virtualStock.get(prm.getRawMaterial().getId()) - maxQty * prm.getQuantity();
+            virtualStock.put(prm.getRawMaterial().getId(), remaining);
+        }
+
+        ProductionPlanDTO.Item item = new ProductionPlanDTO.Item();
+        item.productName = product.getName();
+        item.quantity = maxQty;
+        item.value = product.getValue().multiply(BigDecimal.valueOf(maxQty));
+
+        plan.items.add(item);
+        plan.totalValue = plan.totalValue.add(item.value);
     }
+
+    return plan;
+}
 
     public List<ProductionCapacityDTO> getAvailableProducts() {
 

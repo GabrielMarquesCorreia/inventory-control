@@ -320,7 +320,7 @@ select option:hover {
   }
 }
 
-/* Celular */
+/* phone */
 @media (max-width: 480px) {
 
   body {
